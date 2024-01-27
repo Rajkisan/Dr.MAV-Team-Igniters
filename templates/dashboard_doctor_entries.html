@@ -1,0 +1,39 @@
+<!-- dashboard_doctor_entries.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user_type }} Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ user_type }} Dashboard</h1>
+        <br>
+        {% for entry in sickness_entries %}
+            <div class="entry">
+                <p>Username: {{ entry.username }}</p>
+                <p>Sickness Information: {{ entry.sickness_info }}</p>
+                <p>Time: {{ entry.time }}</p>
+                <p>Date: {{ entry.date }}</p>
+
+                <!-- Add a button for each entry -->
+                <button class="update-button" data-username="{{ entry.username }}">Call</button>
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Attach click event to the update button
+        $('.update-button').on('click', function() {
+            var username = $(this).data('username');
+            // Perform any action you want when the button is clicked
+            alert('Calling ' + username);
+        });
+    </script>
+</body>
+</html>

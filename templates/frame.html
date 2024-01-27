@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button with Iframe</title>
+</head>
+<body>
+
+<h1>Connect to the doctor!</h1>
+<p>Kindly, click connect it</p>
+
+<!-- Add a button that, when clicked, opens an iframe in a box -->
+<button onclick="openIframe()">Connect it</button>
+
+<!-- The box where the iframe will be displayed -->
+<div id="iframeBox" style="width: 500px; height: 300px; border: 1px solid #ccc; margin-top: 20px;"></div>
+
+<!-- Add a new button that, when clicked, replaces the body content with index.html content -->
+<button id="quizButton" style="display: none;" onclick="openIndexHTML()">Take a Quiz</button>
+<div id="iframeContainer"></div>
+
+<script>
+    // Variables to track whether the "connect it" button and "Take a Quiz" button have been pressed
+    var connectButtonPressed = false;
+    var quizButtonPressed = false;
+
+    // Function to open an iframe with a specific link in the box
+    function openIframe() {
+        // Replace 'http://192.168.60.115/' with your iframe link
+        var iframeLink = 'http://192.168.60.115/';
+
+        // Create an iframe element
+        var iframe = document.createElement('iframe');
+        iframe.src = iframeLink;
+        iframe.width = '50%';
+        iframe.height = '50%';
+
+        // Get the box element
+        var iframeBox = document.getElementById('iframeBox');
+
+        // Clear the box content
+        iframeBox.innerHTML = '';
+
+        // Append the iframe to the box
+        iframeBox.appendChild(iframe);
+
+        // Set the flag to true when "connect it" button is pressed
+        connectButtonPressed = true;
+
+        // Show the "Take a Quiz" button if it has not been pressed before
+        if (!quizButtonPressed) {
+            document.getElementById('quizButton').style.display = 'block';
+        }
+    }
+
+    // Function to replace the body content with index.html content
+    function openIndexHTML() {
+        // Check if the "connect it" button has been pressed and the "Take a Quiz" button has not been pressed
+        if (connectButtonPressed && !quizButtonPressed) {
+            // Set the flag to true when "Take a Quiz" button is pressed
+            quizButtonPressed = true;
+
+            // Replace 'index.html' with the correct path to your index.html
+            var iframe = document.createElement('iframe');
+            iframe.src = '{{ url_for("index") }}'; // Use Flask's url_for to get the URL of the external file
+            iframe.width = '600';
+            iframe.height = '400';
+            document.getElementById('iframeContainer').appendChild(iframe);
+        }
+    }
+</script>
+
+</body>
+</html>

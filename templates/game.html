@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Quick Quiz - Play</title>
+  </head>
+  <body>
+    <div class="container">
+      <div id="game" class="justify-center flex-column">
+        <div id="hud">
+          <div id="hud-item">
+            <p id="progressText" class="hud-prefix">
+              Question
+            </p>
+            <div id="progressBar">
+              <div id="progressBarFull"></div>
+            </div>
+          </div>
+          <div id="hud-item">
+            <p class="hud-prefix">
+              healthy
+            </p>
+            <h1 class="hud-main-text" id="score">
+              0
+            </h1>
+          </div>
+        </div>
+        <h2 id="question"></h2>
+        <div class="choice-container">
+          <p class="choice-prefix">A</p>
+          <p class="choice-text" data-number="1"></p>
+        </div>
+        <div class="choice-container">
+          <p class="choice-prefix">B</p>
+          <p class="choice-text" data-number="2"></p>
+        </div>
+       
+      </div>
+    </div>
+    <script>
+        const question = document.getElementById('question');
+const choices = Array.from(document.getElementsByClassName('choice-text'));
+const progressText = document.getElementById('progressText');
+const scoreText = document.getElementById('score');
+const progressBarFull = document.getElementById('progressBarFull');
+const game = document.getElementById('game');
+let currentQuestion = {};
+let acceptingAnswers = false;
+let score = 0;
+let questionCounter = 0;
+let availableQuesions = [];
+
+const CORRECT_BONUS = 10;
+const MAX_QUESTIONS = 10;
+
+// Predefined set of questions
+const questions = [
+  {
+    question: "Do you feel warm, cold, or normal?",
+    answer: 1, // 1 for Yes
+  },
+  {
+    question: "Are you experiencing any irregularities or palpitations in your heartbeat?",
+    answer: 1, // 1 for Yes
+  },
+  {
+    question: "Have you noticed any changes in your blood pressure recently?",
+    answer: 2, // 2 for No
+  },
+  {
+    question: "Are you experiencing any shortness of breath or difficulty breathing?",
+    answer: 1, // 1 for Yes
+  },
+  {
+    question: "Are you using any oxygen support, and if so, what is the flow rate?",
+    answer: 2, // 2 for No
+  },
+  {
+    question: "Are you experiencing any pain or discomfort?",
+    answer: 1, // 1 for Yes
+  },
+  {
+    question: "Have you been in contact with anyone diagnosed with COVID-19 recently?",
+    answer: 2, // 2 for No
+  },
+  {
+    question: "Are you currently taking any medications?",
+    answer: 1, // 1 for Yes
+  },
+  {
+    question: "Are you experiencing any difficulties falling asleep or staying asleep?",
+    answer: 2, // 2 for No
+  },
+  {
+    question: "Are you experiencing any stress, anxiety, or depression symptoms?",
+    answer: 1, // 1 for Yes
+  },
+  // Add more questions as needed
+];
+
+startGame = () => {
+  questionCounter = 0;
+  score = 0;
+  availableQuesions = [...questions];
+  getNewQuestion();
+  game.classList.remove('hidden');
+};
+
+getNewQuestion = () => {
+  if (availableQuesions.length === 0 || questionCounter >= MAX_QUESTIONS) {
+    localStorage.setItem('mostRecentScore', score);
+    // Go to the end page
+    return window.location.assign('/end.html');
+  }
+  questionCounter++;
+  progressText.innerText = `Question ${questionCounter}/${MAX_QUESTIONS}`;
+  progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
+
+  const questionIndex = Math.floor(Math.random() * availableQuesions.length);
+  currentQuestion = availableQuesions[questionIndex];
+  question.innerHTML = currentQuestion.question;
+
+  choices.forEach((choice, index) => {
+    const choiceText = index === 0 ? 'Yes' : 'No';
+    choice.innerHTML = choiceText;
+  });
+
+  availableQuesions.splice(questionIndex, 1);
+  acceptingAnswers = true;
+};
+
+choices.forEach((choice) => {
+  choice.addEventListener('click', (e) => {
+    if (!acceptingAnswers) return;
+
+    acceptingAnswers = false;
+    const selectedChoice = e.target;
+    const selectedAnswer = selectedChoice.dataset['number'];
+
+    const classToApply = selectedAnswer == currentQuestion.answer ? 'correct' : 'incorrect';
+
+    if (classToApply === 'correct') {
+      incrementScore(CORRECT_BONUS);
+    }
+
+    selectedChoice.parentElement.classList.add(classToApply);
+
+    setTimeout(() => {
+      selectedChoice.parentElement.classList.remove(classToApply);
+      getNewQuestion();
+    }, 1000);
+  });
+});
+
+incrementScore = (num) => {
+  score += num;
+  scoreText.innerText = score;
+};
+
+startGame();
+
+    </script> 
+  </body>
+</html>

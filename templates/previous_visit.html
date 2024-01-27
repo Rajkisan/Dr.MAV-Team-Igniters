@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previous Visit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Previous Visit</h1>
+        <p>This is the page for viewing previous visits.</p>
+        <ul>
+            <li>Visit 1 - Details</li>
+            <li>Visit 2 - Details</li>
+            <!-- Add more visit details as needed -->
+        </ul>
+        <br>
+        <a href="{{ url_for('dashboard', user_type=user_type) }}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

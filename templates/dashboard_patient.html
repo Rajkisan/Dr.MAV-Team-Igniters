@@ -1,0 +1,64 @@
+<!-- dashboard_patient.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user_type }} Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ user_type }} Dashboard</h1>
+        <form method="post" id="sicknessForm">
+            <label for="sickness_info">Sickness Information:</label>
+            <textarea id="sickness_info" name="sickness_info" rows="4" required></textarea>
+            <br>
+            <button type="button" onclick="submitSicknessInfo()">Submit Sickness Information</button>
+        </form>
+        <br>
+        <a href="{{ url_for('logout') }}">Logout</a>
+        <br>
+        <a href="{{ url_for('previous_visit') }}">Previous Visit</a>
+        <br>
+        <a href="{{ url_for('medicine_brought') }}">Medicine Brought</a>
+
+        <!-- Display the response from the server asynchronously -->
+        <div id="sicknessResponse"></div>
+
+        <!-- Display the "Connect" button after submitting sickness information -->
+        <button class="connect-button" style="display:none;" onclick="openFramePage()">Connect</button>
+    </div>
+
+    <script>
+        // Function to submit sickness information asynchronously
+        function submitSicknessInfo() {
+            var sicknessInfo = $('#sickness_info').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/submit_sickness_info',  // Flask route to handle the submission
+                data: { 'sickness_info': sicknessInfo },
+                success: function(response) {
+                    // Display the response from the server
+                    $('#sicknessResponse').html(response.message);
+
+                    // Show the "Connect" button after successful submission
+                    $('.connect-button').show();
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        // Function to open the 'frame.html' page in a new window
+        function openFramePage() {
+            // Redirect to the 'frame' route
+            window.location.href = '{{ url_for("frame") }}';
+        }
+    </script>
+</body>
+</html>

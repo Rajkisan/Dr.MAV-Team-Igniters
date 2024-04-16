@@ -1,12 +1,86 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+  <title>Page Title</title>
+  <style>
+    /* Style to make the iframe and buttons appear side by side */
+    button, iframe {
+      display: inline-block;
+      margin: 10px;
+      vertical-align: top;
+    }
+
+    /* Clear the float after every third element to start a new row */
+    br {
+      clear: both;
+    }
+  </style>
 </head>
 <body>
+    {% for entry in response_entries %}
+  <!-- Display each response entry -->
+  <div>
+    <p>Question: {{ entry.question }}</p>
+    <p>Answer: {{ entry.answer }}</p>
+    <p>Timestamp: {{ entry.timestamp }}</p>
+  </div>
+{% endfor %}
 
-<h1>This is a Heading</h1>
-<p>This is a paragraph.</p>
+<!-- Connect button -->
+<button onclick="openIframe('connectIframe')">Connect</button>
+
+<!-- Iframe for Connect button -->
+<iframe id="connectIframe" width="500" height="400" style="display:none;">Connect</iframe>
+
+<!-- Button 2 with its own iframe -->
+<button id="button2" style="display:none;" onclick="openIframe('iframe2')">Connect</button>
+<iframe id="iframe2" width="500" height="400" style="display:none;"></iframe>
+
+<!-- Button 3 with its own iframe -->
+<button id="button3"  onclick="openIframe('iframe3')">Run</button>
+<iframe id="iframe3" width="600" height="300" style="display:none;"></iframe>
+
+<!-- Button 4 with its own iframe -->
+<button id="button4" style="display:none;" onclick="openIframe('iframe4')">Stop</button>
+<iframe id="iframe4" width="600" height="300" style="display:none;"></iframe>
+
+<script>
+  function openIframe(iframeId) {
+    // Set the iframe link based on the iframeId
+    var iframeLink;
+
+    if (iframeId === 'connectIframe') {
+      // Link for Connect button
+      iframeLink = 'http://172.31.98.102:8084/?action=stream';
+    } else if (iframeId === 'iframe2') {
+      // Link for Button 2
+      iframeLink = 'http://172.31.98.112:5002';
+    } else if (iframeId === 'iframe3') {
+      // Link for Button 3
+      iframeLink = 'http://172.31.98.112:5001/run_script';
+    } else if (iframeId === 'iframe4') {
+      // Link for Button 4
+      iframeLink = 'http://172.31.98.112:5001/stop_script';
+    }
+
+    // Get the iframe element
+    var iframe = document.getElementById(iframeId);
+
+    // Set the iframe link and display it
+    iframe.src = iframeLink;
+    iframe.style.display = 'inline-block';
+
+    // Show additional buttons and iframes if the clicked button is Connect, Button 2, or Button 3
+    if (iframeId === 'connectIframe' || iframeId === 'iframe2' || iframeId === 'iframe3') {
+      document.getElementById('button2').style.display = 'inline-block';
+      document.getElementById('iframe2').style.display = 'inline-block';
+      document.getElementById('button3').style.display = 'inline-block';
+      document.getElementById('iframe3').style.display = 'inline-block';
+      document.getElementById('button4').style.display = 'inline-block';
+      document.getElementById('iframe4').style.display = 'inline-block';
+    }
+  }
+</script>
 
 </body>
 </html>

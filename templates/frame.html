@@ -4,20 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Button with Iframe</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
+    <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif; /* Use Poppins font first, fallback to Arial, sans-serif */
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        #iframeBox {
+            width: 50%;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            overflow: hidden; /* To hide scrollbars */
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #quizButton {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #iframeContainer {
+            margin-top: 20px;
+        }
+        .logout-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
 
 <h1>Connect to the doctor!</h1>
-<p>Kindly, click connect it</p>
+<p>Kindly, click "Connect it"</p>
 
 <!-- Add a button that, when clicked, opens an iframe in a box -->
 <button onclick="openIframe()">Connect it</button>
 
 <!-- The box where the iframe will be displayed -->
-<div id="iframeBox" style="width: 500px; height: 300px; border: 1px solid #ccc; margin-top: 20px;"></div>
+<div id="iframeBox"></div>
 
 <!-- Add a new button that, when clicked, replaces the body content with index.html content -->
-<button id="quizButton" style="display: none;" onclick="openIndexHTML()">Take a Quiz</button>
+<button id="quizButton" onclick="openIndexHTML()">Take a Quiz</button>
 <div id="iframeContainer"></div>
 
 <script>
@@ -28,13 +87,13 @@
     // Function to open an iframe with a specific link in the box
     function openIframe() {
         // Replace 'http://192.168.60.115/' with your iframe link
-        var iframeLink = 'http://192.168.60.115/';
+        var iframeLink = 'http://172.31.98.112:5002';
 
         // Create an iframe element
         var iframe = document.createElement('iframe');
         iframe.src = iframeLink;
-        iframe.width = '50%';
-        iframe.height = '50%';
+        iframe.width = '100%';
+        iframe.height = '100%';
 
         // Get the box element
         var iframeBox = document.getElementById('iframeBox');

@@ -11,7 +11,7 @@
         function updateDoctorDashboard() {
             $.ajax({
                 type: 'GET',
-                url: '/get_sickness_entries',  // Flask route to handle the update
+                url: '/get_sickness_entries',
                 success: function(response) {
                     // Update the doctor's dashboard box with the response
                     $('#doctorDashboardBox').html(response);
@@ -25,13 +25,90 @@
         // Periodically update the dashboard every 5 seconds (adjust as needed)
         setInterval(updateDoctorDashboard, 5000);
     </script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding-top: 70px; /* Add padding-top equal to the navbar height */
+        }
+
+        .navbar-container {
+            background-color: #fff;
+            border-bottom: 10px solid #ccc;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px; /* Set the height of the navbar */
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .navbar-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-button, .go-home-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover, .go-home-button:hover {
+            background-color: #c82333;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 70px; /* Adjusted margin-top to accommodate the navbar */
+            padding-top: 10px; /* Added padding-top to create space between the navbar and the container */
+            height: calc(100vh - 70px); /* Set container height to 100% viewport height minus navbar height */
+            overflow:auto ;
+        }
+
+        #doctorDashboardBox {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            max-height: none; /* Ensure the container's content can grow infinitely */
+        }
+
+        p {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
+    <nav class="navbar-container">
         <h1>{{ user_type }} Dashboard</h1>
-        <br>
-        <br>
-        <div id="doctorDashboardBox" style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+        <div class="navbar-buttons">
+            <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+            <a href="{{ url_for('home') }}" class="go-home-button">Go Home</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="doctorDashboardBox">
             <!-- Display the sickness form details from the database -->
             {% for entry in sickness_entries %}
                 <p>

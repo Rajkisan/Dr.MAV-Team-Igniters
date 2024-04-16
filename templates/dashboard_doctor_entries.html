@@ -1,5 +1,3 @@
-<!-- dashboard_doctor_entries.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ user_type }} Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif; /* Use Poppins font first, fallback to Arial, sans-serif */
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 36px;
+            color: #333;
+        }
+
+        .entry {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+        }
+
+        .entry p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .update-button {
+            padding: 8px 16px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .update-button:hover {
+            background-color: #45a049;
+        }
+        .delete-button {
+            padding: 8px 16px;
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -21,9 +86,11 @@
                 <p>Date: {{ entry.date }}</p>
 
                 <!-- Add a button for each entry -->
-                <button class="update-button" data-username="{{ entry.username }}">Call</button>
+                <button class="update-button" data-username="{{ entry.username }}">Give Prescription</button>
+                <!-- Add a delete button for each entry -->
+                <button class="delete-button" data-username="{{ entry.username }}" data-time="{{ entry.time }}" data-date="{{ entry.date }}">Delete</button>
+
             </div>
-            <br>
         {% endfor %}
     </div>
 
@@ -31,9 +98,35 @@
         // Attach click event to the update button
         $('.update-button').on('click', function() {
             var username = $(this).data('username');
-            // Perform any action you want when the button is clicked
-            alert('Calling ' + username);
+            
+            // Open the framedoc.html page in a new window or iframe
+            window.open('https://drmav-blockchain.vercel.app/', '_blank');
+  // Use _blank to open in a new window
         });
+        $('.delete-button').on('click', function() {
+        var username = $(this).data('username');
+        var time = $(this).data('time');
+        var date = $(this).data('date');
+        
+        // Send an AJAX request to delete the entry from the database
+        $.ajax({
+            url: '{{ url_for("delete_entry") }}',
+            method: 'POST',
+            data: {
+                username: username,
+                time: time,
+                date: date
+            },
+            success: function(response) {
+                console.log('Entry deleted successfully.');
+                // For example, you can remove the deleted entry from the UI
+                $(this).closest('.entry').remove();
+            },
+            error: function(error) {
+                console.error('Error deleting entry:', error);
+            }
+        });
+    });
     </script>
 </body>
 </html>

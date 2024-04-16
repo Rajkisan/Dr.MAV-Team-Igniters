@@ -6,6 +6,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 
+
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect('site.db')
@@ -13,9 +14,7 @@ def get_db():
     return g.db
 
 # Add this route for the 'frame' endpoint
-@app.route('/frame')
-def frame():
-    return render_template('frame.html')
+
 
 # Create the database table for patient entries
 conn = sqlite3.connect('site.db')
@@ -71,6 +70,7 @@ def signup():
 
         # Use the default hashing method
         hashed_password = generate_password_hash(password)
+        print(hashed_password)
 
         # Insert the new user into the database
         cursor.execute('INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)',
@@ -83,10 +83,11 @@ def signup():
 
     return render_template('signup.html')
 
+
 # Submit Sickness Info route for patients
 @app.route('/submit_sickness_info', methods=['POST'])
 def submit_sickness_info():
-    if 'user_type' in session and session['user_type'] == 'patient':
+    if 'user_type' in session and session['user_type'] == 'Patient':
         sickness_info = request.form['sickness_info']
 
 
@@ -146,6 +147,7 @@ def login():
 
         if user and check_password_hash(user[2], password):
             flash('Login successful!', 'success')
+            print(password)
             session['user_type'] = user[3]
             session['user_id'] = user[0]
             session['username'] = user[1]
@@ -172,12 +174,12 @@ def dashboard(user_type):
         flash('Please log in to access the dashboard.', 'error')
         return redirect(url_for('login'))
 
-    if user_type == 'patient':
+    if user_type == 'Patient':
         if request.method == 'POST':
             sickness_info = request.form['sickness_info']
             flash(f'Sickness information submitted: {sickness_info}', 'success')
         return render_template('dashboard_patient.html', user_type=user_type)
-    elif user_type == 'doctor':
+    elif user_type == 'Doctor':
         return render_template('dashboard_doctor.html', user_type=user_type)
 
 # Route for previous visit
@@ -194,7 +196,7 @@ def medicine_brought():
 @app.route('/')
 def home():
     return render_template('home.html')
-    
+
 
 # Default route with navbar
 @app.route('/index')
@@ -206,13 +208,36 @@ def show_game():
     game_data = get_game_data()  # Replace with your logic to fetch quizzes data
     return render_template('game.html', game=game_data)
 
+@app.route('/frame')
+def frame():
+    return render_template('frame.html')
 
+# Add this route for the 'framedoc' endpoint
+@app.route('/framedoc')
+def framedoc():
+    return render_template('framedoc.html')
 # Default route with navbar
 @app.route('/game')
 def game():
     return render_template('game.html')
+@app.route('/delete_entry', methods=['POST'])
+def delete_entry():
+    username = request.form['username']
+    time = request.form['time']
+    date = request.form['date']
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+        # Delete the entry with the specified username
+    cursor.execute('DELETE FROM patient_entries WHERE username = ? AND time = ? AND date = ?', (username, time, date))
+    print("Deleted Successfully")
+    conn.commit()
+    conn.close()
+
+    return jsonify({'message': 'Sickness information deleted successfully'})
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)
